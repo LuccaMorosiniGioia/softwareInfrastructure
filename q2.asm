@@ -23,18 +23,18 @@ start:
         mov si, azul;aponta para inicio de azul
         int 10h ;interrupcao de video
         call printAzul
-        call done
+        ;call done
     .printAmarelo:
         mov si, amarelo;aponta para inicio de azul    
         call printAmarelo
-        call done
+        ;call done
     .printVerde:
-        mov si, amarelo;aponta para inicio de azul    
-        call printAmarelo
-        call done
+        mov si, verde;aponta para inicio de azul    
+        call printVerde
+        ;call done
     .printVermelho:
-        mov si, amarelo;aponta para inicio de azul    
-        call printAmarelo
+        mov si, vermelho;aponta para inicio de azul    
+        call printVermelho
         call done
 
 
@@ -73,7 +73,7 @@ printAmarelo:
     je .done ; se for, pula pra .done e retorna
 
     ;se nao terminou
-    mov bl, 14 ; cor azul da linha do texto
+    mov bl, 14 ; cor amarela da linha do texto
     mov ah, 0eh
     int 10h ;interrupcao de video
     jmp printAmarelo
@@ -81,6 +81,38 @@ printAmarelo:
     ;se terminou
     .done:
         ret
+printVermelho:
+    lodsb ;carrega um caractere de si para al e passa pro proximo
+    cmp al, 0 ;compara se o registrador al eh igual a zero
+    je .done ; se for, pula pra .done e retorna
+
+    ;se nao terminou
+    mov bl, 4 ; cor amarela da linha do texto
+    mov ah, 0eh
+    int 10h ;interrupcao de video
+    jmp printVermelho
+
+    ;se terminou
+    .done:
+        ret
+
+printVerde:
+    lodsb ;carrega um caractere de si para al e passa pro proximo
+    cmp al, 0 ;compara se o registrador al eh igual a zero
+    je .done ; se for, pula pra .done e retorna
+
+    ;se nao terminou
+    mov bl, 2 ; cor amarela da linha do texto
+    mov ah, 0eh
+    int 10h ;interrupcao de video
+    jmp printVerde
+
+    ;se terminou
+    .done:
+        ret
+
+
+
 
 
 done:
