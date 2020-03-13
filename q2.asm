@@ -1,8 +1,8 @@
 org 0x7c00
 jmp 0x0000:start
 
-SECTION .data
 azul db 'azul',13,10,0
+stringUser db 'vermelho',13,10,0
 amarelo db 'amarelo', 13,10,0
 verde db 'verde', 13,10,0
 vermelho db 'vermelho', 13,10,0
@@ -10,10 +10,6 @@ vermelho db 'vermelho', 13,10,0
 naoExiste db 'nao existe', 13,10,0
 
 
-SECTION .bss
-stringUser:     resb    10 
-
-SECTION .text
 start:
     xor ax, ax ;zera ax
     mov ds, ax ;zera ds
