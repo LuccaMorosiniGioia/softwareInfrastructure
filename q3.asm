@@ -5,6 +5,8 @@ jmp 0x0000:start
 ans db 1
 x db 0 
 
+new_line db '', 13, 10, 0
+
 start:
 
     mov ah, 0
@@ -24,6 +26,7 @@ begin:
     mov bl, 2
     int 10h
 
+
     sub al, '0'
     mov [x], al ; salva em x a quant de casos
 
@@ -34,6 +37,8 @@ begin:
     mov bh, 0
     mov bl, 2
     int 10h
+
+    call n_line ;pula linha
 
 main:
 
@@ -181,6 +186,7 @@ print_ans: ; olha o valor de ans e printa a reposta
 
 okay:
 
+    call n_line ;pula linha
     mov al, 'S'
     mov ah, 0Eh
     mov bh, 0
@@ -191,10 +197,11 @@ okay:
     mov bh, 0
     mov bl, 2
     int 10h
+    call n_line ;pula linha
     ret 
 
 n_okay:
-
+    call n_line ;pula linha
     mov al, 'N'
     mov ah, 0Eh
     mov bh, 0
@@ -205,6 +212,7 @@ n_okay:
     mov bh, 0
     mov bl, 2
     int 10h
+    call n_line ;pula linha
     ret 
 
  ; FUNCOES DE DEBUG:
@@ -232,6 +240,22 @@ pop_stck:
     mov bl, 2
     int 10h
     ret
+
+n_line:
+    mov si, new_line
+    call print_str
+    ret
+
+print_str:
+    lodsb
+    cmp al, 0
+    je done
+
+    mov ah,0eh
+    int 10h
+    jmp print_str
+    done:
+        ret
 
 
 times 510 - ($-$$) db 0

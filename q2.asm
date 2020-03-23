@@ -2,7 +2,7 @@ org 0x7c00
 jmp 0x0000:start
 
 azul db 'azul',13,10,0
-;stringUser db 'vermelho',13,10,0
+
 amarelo db 'amarelo', 13,10,0
 verde db 'verde', 13,10,0
 vermelho db 'vermelho', 13,10,0
