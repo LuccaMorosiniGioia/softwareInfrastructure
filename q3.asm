@@ -4,8 +4,7 @@ jmp 0x0000:start
 
 ans db 1
 x db 0 
-
-new_line db '', 13, 10, 0
+aux db 0
 
 start:
 
@@ -18,27 +17,56 @@ start:
 
 begin:
 
-    xor ah, ah ; le quantos casos teste
-    int 16h
-
-    mov ah, 0Eh
-    mov bh, 0
-    mov bl, 2
-    int 10h
-
-
-    sub al, '0'
-    mov [x], al ; salva em x a quant de casos
-
-    xor ah, ah
-    int 16h ; pega o ultimo \n
-
-    mov ah, 0Eh
-    mov bh, 0
-    mov bl, 2
-    int 10h
+    call recebe_n
 
     call n_line ;pula linha
+
+    jmp main
+
+recebe_n:
+
+    xor ah, ah
+    int 16h
+    
+    mov ah, 0Eh
+    mov bh, 0
+    mov bl, 2
+    int 10h
+
+    sub al, '0'
+    mov [x], al
+
+    xor ah, ah
+    int 16h
+    
+    mov ah, 0Eh
+    mov bh, 0
+    mov bl, 2
+    int 10h
+
+    cmp al, 13
+    je .end
+
+    sub al, '0'
+    mov [aux], al
+
+    mov al, [x]
+    mov cl, 10
+    mul cl
+
+    add al, [aux]
+    mov [x], al
+
+    xor ah, ah
+    int 16h
+    
+    mov ah, 0Eh
+    mov bh, 0
+    mov bl, 2
+    int 10h
+
+    .end:
+        ret
 
 main:
 
@@ -48,7 +76,8 @@ main:
     je $ ; finaliza
     mov ah, 1
     sub [x], ah ; x--
-
+    mov [ans], ah
+    
     call leitura
 
     
@@ -152,13 +181,15 @@ cmp_ch:
     ret 
     
 end_:
-    ;call checa_stck ; essa funcao deveria checar se depois da entrada acabar a pilha ficou vazia ou nao, pq se n estiver a saida eh false - deu erro :( 
+    call checa_stck ; essa funcao deveria checar se depois da entrada acabar a pilha ficou vazia ou nao, pq se n estiver a saida eh false - deu erro :( 
     call print_ans 
     jmp main
 
 checa_stck:
     pop bx
+    pop cx
     pop ax
+    push cx
     push bx
     cmp al, 1
     jne n_b_1
@@ -242,8 +273,11 @@ pop_stck:
     ret
 
 n_line:
-    mov si, new_line
-    call print_str
+    mov ah, 02h            
+    mov bh, 0
+    add dh, 1
+    mov dl, 0
+    int 10h
     ret
 
 print_str:
