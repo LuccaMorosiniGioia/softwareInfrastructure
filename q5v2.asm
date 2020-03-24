@@ -93,20 +93,6 @@ calcDenominador:
     xor ah, ah
     xor al, al
     mov al, [primeiro_denominador]
-    add al,'0'
-    mov ah, 0Eh
-    mov bl, 15 ; cor da linha do texto
-    int 10h
-
-    mov bl, [segundo_denominador]
-    mov al, bl
-    
-    add al,'0'
-    mov ah, 0Eh
-    mov bl, 15 ; cor da linha do texto
-    int 10h
-
-    mov al, [primeiro_denominador]
     mov bl, [segundo_denominador]
 
     mul bl
