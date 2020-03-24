@@ -8,6 +8,9 @@ primeiro_denominador db 0  ; denominador da primeira fraçao recebida
 segundo_numerador db 0  ; numerador da segunda fraçao recebida
 segundo_denominador db 0 ; denominador da segunda fraçao recebida
 
+whiteSpace db '     ',0
+nextLine db ' ',13,10
+
 result db 0
 string times 10 db 0
 string1 times 10 db 0
@@ -23,7 +26,8 @@ start:
     ;call calcNumerador
     ;call calcDenominador
 putchar:
-	mov ah, 0x0e 
+	mov ah, 0x0e
+    mov bl, 15 
 	int 10h
 	ret
 reverse:						; mov si, string
@@ -127,19 +131,25 @@ readNumerador2:
 readDenominador2:
     xor ah, ah
     int 16h
+    ;mov ah, 0Eh
+    ;mov bh, 0 ; Cor do fundo da tela
+    ;mov bl, 15 ; cor da linha do texto
+    ;int 10h ;printa o caractere recebido
+
+    cmp al, 13
+    je .done  ;se não for igual a c, salva o segundo numerador, caso seja barra, vai ler o segundo denominador
     mov ah, 0Eh
     mov bh, 0 ; Cor do fundo da tela
     mov bl, 15 ; cor da linha do texto
     int 10h ;printa o caractere recebido
-
-    cmp al, 'c'
-    je .done  ;se não for igual a /, salva o segundo numerador, caso seja barra, vai ler o segundo denominador
     mov bl, al
     sub bl, '0' 
     mov [segundo_denominador],bl
     jmp readDenominador2
     
     .done:
+        mov si, whiteSpace
+	    call prints
         jmp calcNumerador
 
 
@@ -162,7 +172,7 @@ calcNumerador:
     mul bl
 
     add ax, dx
-
+    
 	mov di, string
 	call tostring
 	mov si, string
@@ -186,6 +196,13 @@ calcDenominador:
 	call tostring
 	mov si, string1
 	call prints
+
+    mov si, nextLine
+	call prints
+
+    jmp readNumerador1
+
+
     
   
 
