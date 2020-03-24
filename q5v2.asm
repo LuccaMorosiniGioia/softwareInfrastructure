@@ -86,7 +86,53 @@ readDenominador2:
     jmp readDenominador2
     
     .done:
-        jmp calcDenominador
+        jmp calcNumerador
+
+
+calcNumerador:
+    xor ah, ah
+    xor al, al
+
+    mov al, [primeiro_numerador]
+    mov bl, [segundo_denominador]
+
+    mul bl
+    mov dx, ax 
+
+
+    xor ah, ah
+    xor al, al
+
+    mov al, [segundo_numerador]
+    mov bl, [primeiro_denominador]
+
+    mul bl
+
+    add dh, ah 
+    add dl, al;
+
+    mov ax, dx
+    mov bl, 10
+    div bl
+    push ax
+    
+    mov ah, 0Eh
+    add al,'0'
+    mov bl, 15 ; cor da linha do texto
+    int 10h
+
+    pop ax
+    mov al, ah
+    mov ah, 0Eh
+    add al,'0'
+    mov bl, 15 ; cor da linha do texto
+    int 10h
+
+
+    mov ah, 0Eh
+    mov al,'/'
+    mov bl, 15 ; cor da linha do texto
+    int 10h
 
 
 calcDenominador:
@@ -112,6 +158,10 @@ calcDenominador:
     add al,'0'
     mov bl, 15 ; cor da linha do texto
     int 10h
+
+
+
+
 
 
 
