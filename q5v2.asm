@@ -6,8 +6,9 @@ primeiro_denominador db 0  ; denominador da primeira fraçao recebida
 segundo_numerador db 0  ; numerador da segunda fraçao recebida
 segundo_denominador db 0 ; denominador da segunda fraçao recebida
 
-result1 db 0
-result2 db 0
+result db 0
+
+denominador_final db 0
 
 start:
     
@@ -16,8 +17,9 @@ start:
     int 10h
     
     call readNumerador1
-    call calcNumerador
-    call calcDenominador
+    ;call calcNumerador
+    ;call calcDenominador
+
 
 
 readNumerador1:
@@ -32,8 +34,7 @@ readNumerador1:
     je readDenominador1  ;se não for igual a /, salva o primeiro numerador, caso seja barra, vai ler o primeiro denominador
     mov bl, al
     sub bl, '0'
-    mov edi, primeiro_numerador
-    mov [di],bl
+    mov [primeiro_numerador],bl
     jmp readNumerador1
 
 
@@ -49,8 +50,7 @@ readDenominador1:
     je readNumerador2  ;se não for igual a ' ', salva o primeiro denominador, caso seja espaço, vai ler o segundo numerador
     mov bl, al
     sub bl, '0'
-    mov edi,primeiro_denominador
-    mov [di],bl
+    mov [primeiro_denominador],bl
     jmp readDenominador1
 
 
@@ -66,8 +66,7 @@ readNumerador2:
     je readDenominador2  ;se não for igual a /, salva o segundo numerador, caso seja barra, vai ler o segundo denominador
     mov bl, al
     sub bl, '0'
-    mov edi, segundo_numerador
-    mov [di],bl
+    mov [segundo_numerador],bl
     jmp readNumerador2
 
 
@@ -82,64 +81,13 @@ readDenominador2:
     cmp al, 'c'
     je .done  ;se não for igual a /, salva o segundo numerador, caso seja barra, vai ler o segundo denominador
     mov bl, al
-    sub bl, '0'
-    mov edi, segundo_denominador
-    mov [di],bl
+    sub bl, '0' 
+    mov [segundo_denominador],bl
     jmp readDenominador2
-
-    .done:
-        jmp calcNumerador
-
-
-calcNumerador:
-    xor ah, ah
-    xor al, al
-
-    mov al, [primeiro_numerador]
-    mov bl, [segundo_denominador]
-
-    mul bl
-    aam
-    mov dh, ah 
-    mov dl, al;
-;------------------------
-    xor ah, ah
-    xor al, al
-
-    mov al, [segundo_numerador]
-    mov bl, [primeiro_denominador]
-
-    mul bl
-    aam
-    add dh, ah 
-    add dl, al;
-
-   
     
-   mov dx, ax
-    mov bl,10
-    div bl
-    cmp al, 0
-    je .doisnumeros
-    mov ah, 0Eh
-    mov al, dh
-    add al,'0'
-    mov bl, 15 ; cor da linha do texto
-    int 10h
-
-    .doisnumeros:
-        mov ah, 0Eh
-        mov al, dl
-        add al,'0'
-        mov bl, 15 ; cor da linha do texto
-        int 10h
-
-    mov ah, 0Eh
-    mov al, '/'
-    mov bl, 15 ; cor da linha do texto
-    int 10h
     .done:
         jmp calcDenominador
+
 
 calcDenominador:
     xor ah, ah
@@ -162,31 +110,22 @@ calcDenominador:
     mov bl, [segundo_denominador]
 
     mul bl
-    aam
 
-    mov ah, 0Eh
-    mov bl, 15 ; cor da linha do texto
-    int 10h
-
-    mov bl,10
+    mov bl, 10
     div bl
-    cmp al, 0
-    je .doisnumeros
+    push ax
     
-    push ah
     mov ah, 0Eh
     add al,'0'
     mov bl, 15 ; cor da linha do texto
     int 10h
 
-    .doisnumeros:
-        pop ah
-        mov al, ah
-        mov ah, 0Eh
-        add al,'0'
-        mov bl, 15 ; cor da linha do texto
-        int 10h
-
+    pop ax
+    mov al, ah
+    mov ah, 0Eh
+    add al,'0'
+    mov bl, 15 ; cor da linha do texto
+    int 10h
 
 
 
@@ -196,6 +135,3 @@ calcDenominador:
 
 times 510 - ($-$$) db 0
 dw 0xaa55
-
-; nasm -f bin q5.asm -o q5.bin
-; qemu-system-i386 q2.bin
